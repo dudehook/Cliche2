@@ -293,7 +293,7 @@ public class Shell
         }
     }
 
-    private static final String HINT_FORMAT = "This is %1$s, running on Cliche Shell\n" + "For more information on the Shell, enter ?help";
+    protected static final String HINT_FORMAT = "This is %1$s, running on Cliche Shell\n" + "For more information on the Shell, enter ?help";
 
     /**
      * You can operate Shell linewise, without entering the command loop. All output is directed to shell's Output.
@@ -322,7 +322,7 @@ public class Shell
         }
     }
 
-    private void processCommand(String discriminator, List<Token> tokens) throws CLIException
+    protected void processCommand(String discriminator, List<Token> tokens) throws CLIException
     {
         assert discriminator != null;
         assert !discriminator.equals("");
@@ -382,6 +382,9 @@ public class Shell
         return appName;
     }
 
-
+    protected Output getOuput()
+    {
+        return this.output;
+    }
 
 }

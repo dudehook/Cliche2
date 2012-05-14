@@ -121,6 +121,64 @@ public class ShellFactory
         return createConsoleShell(prompt, appName, mainHandler, new EmptyMultiMap<String, Object>());
     }
 
+
+    /**
+     * Facade method facilitating the creation of subshell. DedicatedShell is tied to a single command. All input is
+     * sent to the command as a single string
+     * 
+     * Run the obtained Shell with commandLoop().
+     * 
+     * @param pathElement
+     *            sub-prompt
+     * @param parent
+     *            Shell to be subshell'd
+     * @param appName
+     *            The app name string
+     * @param mainHandler
+     *            Command handler
+     * @param auxHandlers
+     *            Aux handlers to be passed to all subshells.
+     * @return subshell
+     */
+    public static Shell createDedicatedSubshell(String pathElement, Shell parent, String appName, Object mainHandler, String command,
+            MultiMap<String, Object> auxHandlers)
+    {
+
+        List<String> newPath = new ArrayList<String>(parent.getPath());
+        newPath.add(pathElement);
+
+        Shell subshell = new DedicatedShell(parent.getSettings().createWithAddedAuxHandlers(auxHandlers), new CommandTable(
+                parent.getCommandTable().getNamer()), command, newPath);
+
+        subshell.setAppName(appName);
+        subshell.addMainHandler(subshell, "!");
+        subshell.addMainHandler(new HelpCommandHandler(), "?");
+
+        subshell.addMainHandler(mainHandler, "");
+        return subshell;
+    }
+
+    /**
+     * Facade method facilitating the creation of subshell. Subshell is created and run inside Command method and shares
+     * the same IO and naming strtategy.
+     * 
+     * Run the obtained Shell with commandLoop().
+     * 
+     * @param pathElement
+     *            sub-prompt
+     * @param parent
+     *            Shell to be subshell'd
+     * @param appName
+     *            The app name string
+     * @param mainHandler
+     *            Command handler
+     * @return subshell
+     */
+    public static Shell createDedicatedSubshell(String pathElement, Shell parent, String appName, Object mainHandler, String command)
+    {
+        return createDedicatedSubshell(pathElement, parent, appName, mainHandler, command, new EmptyMultiMap<String, Object>());
+    }
+
     /**
      * Facade method facilitating the creation of subshell. Subshell is created and run inside Command method and shares
      * the same IO and naming strategy.
